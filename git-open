@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Get the origin url
+REPO="$(git config --get remote.origin.url)"
+
+case $REPO in
+    # If the repo url is an HTTPS version
+    *"https"*) $(open $REPO);;
+    # Otherwise we know its an SSH version
+    # Remove the git@ since it's an invalid URL and take
+    # second string from the array "cut" created
+    *) PRE_REPLACE=$(echo $REPO | cut -d "@" -f 2)
+    # Replace the ":" with a "/" to make it a valid URL
+        PROPER="${PRE_REPLACE//://}"
+        # Appends https:// to the front so that the
+        # open command knows its actually a URL
+        $(open https://$PROPER);;
+esac
